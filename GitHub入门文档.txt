@@ -1,0 +1,97 @@
+﻿列出当前目录:pwd
+初始化Git仓库：使用git init命令
+添加文件到Git仓库：
+	1.Git add <file> 例如：git add readme.txt	
+	2.使用命令git commit -m <message>完成提交
+	注意：message后面输入的是本次提交的说明。
+版本退回：
+	1.git log 查看历史提交记录，参数--pretty=online显示主要的信息
+	2.git reset --hard HEAD^ 表示退回到上一个版本，HEAD表示当前版本，其中HEAD^表示上一个版本，上上版本就是HEAD^^，上100个版本为HEAD~100
+	  git reset --hard commit_id 通过id号来恢复任意版本。
+	2.1cat readme.txt 查看文本内容
+	3.git reflog 查看命令历史,确定要恢复的版本
+注意:git add 命令实际上就是把要提交的所有修改放到暂存区(stage),然后,执行git commit 就可以一次将暂存区的所有修改提交到分支中
+     修改过后的文件必须使用git add 添加下,不然commit是无法提交修改的,commit匹配add只有add后才能commit修改
+撤销修改:
+	git checkout -- file(注意 file前面有个空格,此时文件没有add到暂存区)
+	git status:查看文件的状态
+	git reset HEAD file :可以把暂存区的修改撤销掉(unstage),重新放回工作区(这时的修改是已经add后的回退)
+删除:真删:git rm 并且 git commit
+     手滑误删:git checkout -- test.txt(test 前面有空格)恢复
+
+远程添加仓库:
+	1.ssh-keygen -t rsa -C"账号名"
+	2.一直回车,直到确认完成
+	3.打开user文件夹下.ssh文件夹中的id_rsa.pub.复制内容
+	4.打开github网页->Setting->SSH and GPG keys->New SSH key->Title 任意,将复制的key粘结到Key中->Add SSH key(点击)
+	5.验证本地绑定是否成功:ssh -T git@github.com
+	6.将本地的文件全部推送到仓库中:git push -u origin master
+	7.可以通过git push origin master 将本地的文件实时推送到仓库中
+克隆远程仓库:
+	1.GitHub网页上创建仓库(不是必须)
+	2.git clone git@github.com:用户名/要克隆的仓库名.git
+	3.完成
+分支创建与合并:(注意:dev为分支名字,名字可以是任意)
+	1.创建dev分支,然后切换到dev分支:git checkout -b dev 
+	该命令相当:git branch dev
+		   git checkout dev
+	2.git branch 查看当前分支
+	3.添加提交分支
+	4.切换回主分支:git checkout master
+	注意:在分支上提交是不能改变master提交点的内容,也就需要了下步的分支合并
+	5.合并分支:git merge dev
+	6.删除分支:git branch -d dev
+	7.查看分支只剩下master分支:git branch
+分支冲突:
+	手动解决即可
+	查看分支合并图:git log --graph
+分支策略:git merge --no-ff :普通模式合并,合并后的历史有分支，能看出来曾经做过合并
+	git merge --fast forward :不能看出来曾经做过合并
+
+bug分支:
+	1.git stash :把当前工作空间“储藏”起来，等以后恢复现场后继续工作
+	2.退出主分支:git checkout master
+	3.创建修复bug的分支:git checkout -b dev
+	4.修复完成.添加,提交
+	5.切换回主分支:git checkout master
+	6.合并分支,删除dev分支: git merge --no-ff -m "dev" dev
+	7.现场列表:git stash list
+	8.恢复现场:git stash apply ->删除stash内容:git stash drop
+		git stash pop 恢复同时删除stash内容
+	
+Feature分支:
+	强行删除一个没有合并过的分支:git branch -D 文件名
+多人协作:
+	1.查看远程库信息:git remote -v
+	2.推送主分支:git push origin master
+	3.推送其他分支:git push origin dev,
+	注意:master分支是主分支要时刻与远程同步,dev分支为开发分支,团队协作也需要推送,bug分支不需要推送远程,feature分支:取决与自己是否想推送
+
+创建标签:
+	新建标签:git tag 标签名,默认为HEAD,也可以指定一个commit id;
+	指定标签信息:git tag -a 标签名 -m "标签信息"
+	查看所有标签:git tag
+	注意:对历史提交打标签: git log --pretty=oneline --abbrev-commit -> 记住要打标签的commit id号 ->git tag 标签名 commit id号
+
+操作标签:
+	删除标签:git tag -d 标签名
+	推送标签:git push origin 标签名
+	推送全部本地标签:git push origin --tags
+	注意:要是标签已经推送到远程,要删除远程标签要先从本地删除:git tag -d 标签名 ->git push origin :refs/tags/标签名
+给命令配置别名:
+	用st表示status : git config --global alias.st status
+	--global针对当前用户起作用!,如果省略global只对当前仓库起作用
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
